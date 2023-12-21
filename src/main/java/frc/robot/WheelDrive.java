@@ -27,27 +27,39 @@ public class WheelDrive {
     public WheelDrive (int angleMotor, int speedMotor, int encoder) {
         this.angleMotor = new TalonSRX(angleMotor);
         this.speedMotor = new CANSparkMax(speedMotor, MotorType.kBrushless);
-
-        // I think the 42 here is the encoder parameter but not positive
-        speedEncoder = this.speedMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
-        speedEncoder.setPosition(0);
-        
-        speedPIDController = this.speedMotor.getPIDController();
-        speedPIDController.setFeedbackDevice(speedEncoder);
-        speedPIDController.setOutputRange(-1, 1);
-
         
         this.angleMotor.setNeutralMode(NeutralMode.Brake);
         this.angleMotor.configClosedloopRamp(0);
         this.angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
+        speedEncoder = this.speedMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
+        speedEncoder.setPosition(0);
+        
+        speedPIDController = this.speedMotor.getPIDController();
+        speedPIDController.setFeedbackDevice(speedEncoder);
+
+
         this.angleMotor.configClosedLoopPeakOutput(0, 1);
         speedPIDController.setOutputRange(-1, 1);
+
+        updatePIDValues(Constants.driveFeedForward, Constants.driveProportional, Constants.driveIntegral, Constants.driveDerivative, Constants.steerFeedForward, Constants.steerProportional, Constants.steerIntegral, Constants.steerDerivative);
     }
 
     public void drive(double speed, double angle) {
-        System.out.println("Angle: " + angle);
         angleMotor.set(ControlMode.Position, (angle / 360.0) * 1024);
-        speedPIDController.setReference(speed, ControlType.kVelocity);
+        speedMotor.set(speed);
+        //TODO the PIDController here will smooth out acceleration and deceleration. Just need to figure out how
+        //speedPIDController.setReference(speed, ControlType.kVelocity);
     }
+
+    public void updatePIDValues(double DFF, double DP, double DI, double DD, double SFF, double SP, double SI, double SD) {
+        speedPIDController.setFF(DFF);
+        speedPIDController.setP(DP);
+        speedPIDController.setI(DI);
+        speedPIDController.setD(DD);
+        angleMotor.config_kF(0, SFF);
+        angleMotor.config_kP(0, SP);
+        angleMotor.config_kI(0, SI);
+        angleMotor.config_kD(0, SD);
+      }
 }

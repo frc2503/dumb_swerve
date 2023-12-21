@@ -2,8 +2,8 @@ package frc.robot;
 
 public class SwerveDrive {
 
-    public final double L = 22;
-    public final double W = 22;
+    public final double L = 0.5588;
+    public final double W = 0.5588;
 
     private WheelDrive backRight;
     private WheelDrive backLeft;
@@ -20,6 +20,8 @@ public class SwerveDrive {
     public void drive (double x1, double y1, double x2){
         double r = Math.sqrt ((L * L) + (W * W));
         y1 *= -1;
+        x1 *= -1;
+        x2 *= -1;
 
         double a = x1 - x2 * (L / r);
         double b = x1 + x2 * (L / r);

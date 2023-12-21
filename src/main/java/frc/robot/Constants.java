@@ -13,4 +13,14 @@ public class Constants {
 
     public static int backRightSpeedCANID = 4;
     public static int backRightAngleCANID = 8;
+
+    public static double driveFeedForward = 0.000175;
+    public static double driveProportional = 0.00001;
+    public static double driveIntegral = 0.0000004;
+    public static double driveDerivative = 0;
+
+    public static double steerFeedForward = 0;
+    public static double steerProportional = 8;
+    public static double steerIntegral = 0.01;
+    public static double steerDerivative = 0.01;
 }

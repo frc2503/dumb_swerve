@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,7 +28,7 @@ public class Robot extends TimedRobot {
   private WheelDrive frontRightWheel = new WheelDrive(Constants.frontRightAngleCANID, Constants.frontRightSpeedCANID, 0);
 
   private SwerveDrive swerveDrive = new SwerveDrive(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
-  private Joystick joystick = new Joystick(0);
+  private XboxController joystick = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -88,9 +89,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    swerveDrive.drive(joystick.getRawAxis(1), joystick.getRawAxis(0), joystick.getRawAxis(4));
+    swerveDrive.drive(joystick.getLeftX(), joystick.getLeftY(), joystick.getRightX());
   }
-
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {}

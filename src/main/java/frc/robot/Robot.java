@@ -22,13 +22,19 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private WheelDrive backLeftWheel = new WheelDrive(Constants.backLeftAngleCANID, Constants.backLeftSpeedCANID, 0);
-  private WheelDrive backRightWheel = new WheelDrive(Constants.backRightAngleCANID, Constants.backRightSpeedCANID, 0);
-  private WheelDrive frontLeftWheel = new WheelDrive(Constants.frontLeftAngleCANID, Constants.frontLeftSpeedCANID, 0);
-  private WheelDrive frontRightWheel = new WheelDrive(Constants.frontRightAngleCANID, Constants.frontRightSpeedCANID, 0);
+  private WheelDrive backLeftWheel = new WheelDrive(Constants.backLeftAngleCANID, Constants.backLeftSpeedCANID);
+  private WheelDrive backRightWheel = new WheelDrive(Constants.backRightAngleCANID, Constants.backRightSpeedCANID);
+  private WheelDrive frontLeftWheel = new WheelDrive(Constants.frontLeftAngleCANID, Constants.frontLeftSpeedCANID);
+  private WheelDrive frontRightWheel = new WheelDrive(Constants.frontRightAngleCANID, Constants.frontRightSpeedCANID);
 
   private SwerveDrive swerveDrive = new SwerveDrive(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
   private XboxController joystick = new XboxController(0);
+
+  double xSpeed;
+  double ySpeed;
+  double rSpeed;
+  double deadZones;
+  double speedMod;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -49,7 +55,29 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+
+    deadZones = .1;
+
+    if(Math.abs(joystick.getLeftX()) < deadZones){
+      xSpeed = 0;
+    }else{
+      xSpeed = joystick.getLeftX();
+    }
+
+    if(Math.abs(joystick.getLeftY()) < deadZones){
+      ySpeed = 0;
+    }else{
+      ySpeed = joystick.getLeftY();
+    }
+
+    if(Math.abs(joystick.getRightX()) < deadZones){
+      rSpeed = 0;
+    }else{
+      rSpeed = joystick.getRightX();
+    }
+
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -89,7 +117,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    swerveDrive.drive(joystick.getLeftX(), joystick.getLeftY(), joystick.getRightX());
+    swerveDrive.driveWithKinematics(xSpeed, ySpeed, rSpeed);
   }
   /** This function is called once when the robot is disabled. */
   @Override
